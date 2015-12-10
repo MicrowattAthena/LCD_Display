@@ -2,6 +2,17 @@ Reverse Engineering an LCD Display
 
 Changelog
 
+V 0.0.4
+
+	User Input is now parsed correctly.
+	Character Map for A, F and Space.
+
+	To Do:
+
+	Complete Character Maps
+	Complete readme
+	Test
+
 V 0.0.3
 
 	Multiple Screens now display based on user input
