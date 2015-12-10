@@ -2,6 +2,15 @@ Reverse Engineering an LCD Display
 
 Changelog
 
+V 0.0.2
+
+	Cleaned up Main Code a bit - Now Array Defined for each screen
+	Worked out How to display multiple screens - not implemented yet. See command_constructors.h
+
+	To Do:
+
+	Allow user some control over what is displayed
+	Display Character Maps
 V 0.0.1
 
 	Worked out how to display one screen of information.

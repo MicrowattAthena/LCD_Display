@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h> // string function definitions
 #include <unistd.h> // UNIX standard function definitions
 #include <fcntl.h> // File control definitions
@@ -11,10 +12,7 @@
 char first_header_final[7];
 char second_header_final[64];
 
-char first_content_final[192];
-char second_content_final[256];
-char third_content_final[68];
-
+char first_screen_final[512];
 
 int generate_header(char screennumber, char effect_type, char screen_speed, char stay_time, char border_type)
 {
@@ -59,47 +57,24 @@ int generate_content(int content)
 	int i;
 	int content_CRC_Check = 0;
 	
-	for (i=0; i < 192; i++)
+	for (i=0; i < 512; i++)
 	{
 		if (i%2)
 		{
-			first_content_final[i]= 0x00;
+			first_screen_final[i]= 0x00;
+			
 		}
 		else
 		{
-			first_content_final[i]= content;
+			first_screen_final[i]= content;
 			content_CRC_Check+= content;
 		}
 	}
 	
-	for (i=0; i <256; i++)
-	{
-		if (i%2)
-		{
-			second_content_final[i] = 0x00;
-		}
-		else
-		{
-			second_content_final[i]= content;
-			content_CRC_Check+= content;
+
 	
-		}
-	}	
-	for (i=0; i<64; i++)
-	{
-		if (i%2)
-		{
-			third_content_final[i] = 0x00;
-		}
-		else
-		{
-			third_content_final[i] = content;
-			content_CRC_Check+= content;
-		}
-	}
-	
-	third_content_final[64] = 0x77;
-	third_content_final[65] = 0x5A;
+	first_screen_final[510] = 0x77;
+	first_screen_final[511] = 0x5A;
 	
 	//CRC Isn't actually used ?
 	printf("Calculated Main CRC: %x	\n", content_CRC_Check + 0xE0);
@@ -117,7 +92,7 @@ int write_content()
 		
 		length = sizeof(first_header_final);
 
-		printf("\nLength of First Message: %d", length);
+		printf("\nLength of First Header: %d", length);
 	
 		write(usbdev, first_header_final,length);
 
@@ -126,37 +101,43 @@ int write_content()
 		
 		length = sizeof(second_header_final);
 
-		printf("\nLength of Second Message: %d", length);
-		
+		printf("\nLength of Second Header: %d", length);
+	
 		write(usbdev, second_header_final, length); 
 
 		usleep(250000);
-	
-		length = sizeof(first_content_final);
-
-		printf("\nLength of Second Message: %d", length);
 		
-		write(usbdev, first_content_final, length); 
+		length = 256;
+		
+		
+		char *firstHalf = malloc(256 * sizeof(char));
+		if (!firstHalf) 
+		{
+			/* handle error */
+		}
+
+		char *secondHalf = malloc(256 * sizeof(char));
+		if (!secondHalf)
+		 {
+			/* handle error */
+		}
+
+		memcpy(firstHalf, first_screen_final, 256 * sizeof(char));
+		memcpy(secondHalf, first_screen_final + 256, 256 * sizeof(char));
+
+		printf("\nLength of First half of First Screen: %d", length);
+
+	
+		write(usbdev, firstHalf,length);
 
 		usleep(250000);
 		
-		length = sizeof(second_content_final);
+		printf("\nLength of Second Half of First Screen: %d", length);
 
-		printf("\nLength of Third Message: %d", length);
-		
-		write(usbdev, second_content_final, length); 
+		write(usbdev, secondHalf,length);
 
 		usleep(250000);
-
-	
-		length = sizeof(third_content_final);
-
-		printf("\nLength of Fourth Message: %d", length);
 		
-		write(usbdev, third_content_final, length); 
-
-		usleep(20000);
-
 		
 		close(usbdev); 
 return 0;	

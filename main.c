@@ -23,7 +23,7 @@ int main ( int argc, char **argv )
 	char inputtype= 0x00;
 	
 	generate_header(screennumber,effect_type,screen_speed,stay_time,border_type);
-	generate_content(0x00);
+	generate_content(0xff);
 	write_content();
 
 	return 0;
