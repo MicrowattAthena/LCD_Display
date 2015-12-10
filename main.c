@@ -6,6 +6,7 @@
 
 #include <stdio.h> // standard input / output functionsdd
 #include "main.h"
+#include <string.h>
 #include "command_generator.h"
 
 //DEFAULT VALUES - May need to overwrite these 
@@ -20,12 +21,25 @@ char border_type = 0x00;
 int main ( int argc, char **argv )
 
 { 
-	char inputtype= 0x00;
-	
-	generate_header(screennumber,effect_type,screen_speed,stay_time,border_type);
-	generate_content(0xff);
-	write_content();
+	if ( argc == 1 ) /* argc should be 2 for correct execution */
+    {
+        
+        /* We print argv[0] assuming it is the program name */
 
-	return 0;
+        printf( "Usage: %s \"Text to display\"\n", argv[0] );
+		return 0;
+	
+    }else{
+		
+		printf( "Displaying: %s\n", argv[1] );
+		int length;
+		length=strlen(argv[1]);
+		generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, length);
+		printf( "Generated Header\n");
+		generate_content(argv[1], length);
+		write_content();
+
+		return 0;
+		}
 };
 

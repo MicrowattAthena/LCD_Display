@@ -8,13 +8,17 @@
 #include <time.h>   // time calls
 #include "command_generator.h"
 #include "command_constructs.h"
+#include "character_arrays.h"
 
 char first_header_final[7];
 char second_header_final[64];
-
 char first_screen_final[512];
+char second_screen_final[512];
+char third_screen_final[512];
+char fourth_screen_final[512];
+char footer_final[2];
 
-int generate_header(char screennumber, char effect_type, char screen_speed, char stay_time, char border_type)
+int generate_header(char screennumber, char effect_type, char screen_speed, char stay_time, char border_type, int length)
 {
 	int i; 
 	int CRC_check = 0;
@@ -23,7 +27,6 @@ int generate_header(char screennumber, char effect_type, char screen_speed, char
 	
 	for (i=0; i < 6; i++)
 	{
-	
 		first_header_final[i] = first_header_construct[i];
 	}
 	
@@ -35,6 +38,9 @@ int generate_header(char screennumber, char effect_type, char screen_speed, char
 	// Taking User Defined Variables and Placing in Array
 			
 	first_header_final[6] = screennumber;
+	
+	//16 is character length on screen
+	second_header_final[1] = ((((length -1)/ 16) + 1 ) * 2);
 	second_header_final[7] = effect_type;
 	second_header_final[9] = screen_speed;
 	second_header_final[11] = stay_time;
@@ -52,93 +58,183 @@ int generate_header(char screennumber, char effect_type, char screen_speed, char
 	return 0;
 }
 
-int generate_content(int content)
+int generate_content(char *content, int length)
 {
-	int i;
+	int i,j,k,l, no_screens;
 	int content_CRC_Check = 0;
+	int character_position = 0;
+	int printcount =0;
+	/* TO DO:
+		Recieve Input from User
+		Determine Number of Screens needed
+		Set number of screens
+		Write Data to correct screens
+		*/
+	printf( "Displaying: %s\n", content );
+	no_screens = (((length -1)/ 16) + 1 );
 	
-	for (i=0; i < 512; i++)
+	if (no_screens >= 1)
 	{
-		if (i%2)
+		for (k= 0; k < 8; k++)
 		{
-			first_screen_final[i]= 0x00;
-			
-		}
-		else
-		{
-			first_screen_final[i]= content;
-			content_CRC_Check+= content;
+			for (j = 0; j < 2; j++)
+			{
+				for (i=0; i <16; i++)
+					{
+						first_screen_final[(2 * (i * 2 + j + (k * 32)))] = full[i];
+						first_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
+					}
+			}
+		
 		}
 	}
 	
-
+	if (no_screens >=2)
 	
-	first_screen_final[510] = 0x77;
-	first_screen_final[511] = 0x5A;
+	{
+		for (k= 0; k < 8; k++)
+		{
+			for (j = 0; j < 2; j++)
+			{
+				for (i=0; i <16; i++)
+					{
+						second_screen_final[(2 * (i * 2 + j + (k * 32)))] = a_capital[i];
+						second_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
+					}
+			}
+		
+		}
+		
+	}
+	
+	if (no_screens >=3)
+	
+	{
+		for (k= 0; k < 8; k++)
+		{
+			for (j = 0; j < 2; j++)
+			{
+				for (i=0; i <16; i++)
+					{
+						third_screen_final[(2 * (i * 2 + j + (k * 32)))] = 0x00;
+						third_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
+					}
+			}
+		
+		}
+		
+	}
+	
+	if (no_screens >=4)
+	
+	{
+		for (k= 0; k < 8; k++)
+		{
+			for (j = 0; j < 2; j++)
+			{
+				for (i=0; i <16; i++)
+					{
+						fourth_screen_final[(2 * (i * 2 + j + (k * 32)))] = 0xFF;
+						fourth_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
+					}
+			}
+		
+		}
+		
+	}
+	footer_final[0] = 0x77;
+	footer_final[1] = 0x5A;
 	
 	//CRC Isn't actually used ?
-	printf("Calculated Main CRC: %x	\n", content_CRC_Check + 0xE0);
 	return 0;
 }
 
 int write_content()
 {
-		int usbdev; /* handle to FTDI device */
-		int length, i;
+	int usbdev; /* handle to FTDI device */
+	int no_screens, i, length;
 		
-		system("stty -F /dev/ttyUSB0 115200 cs8 min 1 time 1");
-	
-		usbdev = open("/dev/ttyUSB0", O_RDWR);
+	system("stty -F /dev/ttyUSB0 115200 cs8 min 1 time 1");
+	usbdev = open("/dev/ttyUSB0", O_RDWR);
 		
-		length = sizeof(first_header_final);
-
-		printf("\nLength of First Header: %d", length);
-	
-		write(usbdev, first_header_final,length);
-
-		usleep(250000);
-
+	length = sizeof(first_header_final);
+	printf("\nLength of First Header: %d", length);
+	write(usbdev, first_header_final,length);
+	usleep(250000);
 		
-		length = sizeof(second_header_final);
-
-		printf("\nLength of Second Header: %d", length);
-	
-		write(usbdev, second_header_final, length); 
-
-		usleep(250000);
-		
-		length = 256;
+	length = sizeof(second_header_final);
+	printf("\nLength of Second Header: %d", length);
+	write(usbdev, second_header_final, length); 
+	usleep(250000);
 		
 		
-		char *firstHalf = malloc(256 * sizeof(char));
+	length = 256;
+		
+	char *firstHalf = malloc(length * sizeof(char));
 		if (!firstHalf) 
 		{
 			/* handle error */
 		}
-
-		char *secondHalf = malloc(256 * sizeof(char));
+		char *secondHalf = malloc(length * sizeof(char));
 		if (!secondHalf)
-		 {
+		{
 			/* handle error */
-		}
-
-		memcpy(firstHalf, first_screen_final, 256 * sizeof(char));
-		memcpy(secondHalf, first_screen_final + 256, 256 * sizeof(char));
-
-		printf("\nLength of First half of First Screen: %d", length);
-
+		}	
 	
+		memcpy(firstHalf, first_screen_final, length * sizeof(char));
+		memcpy(secondHalf, first_screen_final, length * sizeof(char));
+	
+		printf("\nLength of First half of First Screen: %d", length);
 		write(usbdev, firstHalf,length);
-
 		usleep(250000);
 		
 		printf("\nLength of Second Half of First Screen: %d", length);
-
 		write(usbdev, secondHalf,length);
-
+		usleep(250000);
+	
+	
+		memcpy(firstHalf, second_screen_final, length * sizeof(char));
+		memcpy(secondHalf, second_screen_final, length * sizeof(char));
+	
+		printf("\nLength of First half of First Screen: %d", length);
+		write(usbdev, firstHalf,length);
+		usleep(250000);
+		
+		printf("\nLength of Second Half of First Screen: %d", length);
+		write(usbdev, secondHalf,length);
 		usleep(250000);
 		
 		
-		close(usbdev); 
-return 0;	
+		memcpy(firstHalf, third_screen_final, length * sizeof(char));
+		memcpy(secondHalf, third_screen_final, length * sizeof(char));
+	
+		printf("\nLength of First half of First Screen: %d", length);
+		write(usbdev, firstHalf,length);
+		usleep(250000);
+		
+		printf("\nLength of Second Half of First Screen: %d", length);
+		write(usbdev, secondHalf,length);
+		usleep(250000);
+		
+		
+		memcpy(firstHalf, fourth_screen_final, length * sizeof(char));
+		memcpy(secondHalf, fourth_screen_final, length * sizeof(char));
+	
+		printf("\nLength of First half of First Screen: %d", length);
+		write(usbdev, firstHalf,length);
+		usleep(250000);
+		
+		printf("\nLength of Second Half of First Screen: %d", length);
+		write(usbdev, secondHalf,length);
+		usleep(250000);
+		
+	
+	length = sizeof(footer_final);
+	printf("\nLength of Footer: %d\n", length);
+	write(usbdev, footer_final,length);
+	usleep(20000);
+		
+	close(usbdev); 
+	
+	return 0;	
 }

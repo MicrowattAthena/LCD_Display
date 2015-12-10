@@ -2,6 +2,16 @@ Reverse Engineering an LCD Display
 
 Changelog
 
+V 0.0.3
+
+	Multiple Screens now display based on user input
+	Parsing User Input - Not quite using the string yet, just the length
+	Started Working on Character Maps
+
+	To Do:
+
+	Complete user control over display
+	Complete character maps
 V 0.0.2
 
 	Cleaned up Main Code a bit - Now Array Defined for each screen

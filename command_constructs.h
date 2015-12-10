@@ -11,7 +11,7 @@ char first_header_construct[] =
 
 char second_header_construct[] = 
 {
-	0x40, 0x02, // Number of Screens (*2)
+	0x40, 0x04, // Number of Screens (*2)
 	
 	0x00, 0x00, 0x01, 0x00, 0x00, 0x01, // Effect Type
 	
