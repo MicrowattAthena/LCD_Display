@@ -27,13 +27,18 @@ int main ( int argc, char **argv )
         /* We print argv[0] assuming it is the program name */
 
         printf( "Usage: %s \"Text to display\"\n", argv[0] );
-		return 0;
+		return 1;
 	
     }else{
 		
 		printf( "Displaying: %s\n", argv[1] );
 		int length;
 		length=strlen(argv[1]);
+		if (length > 64) 
+		{
+		printf("Character Limit is 64, you have used %d\n", length);
+		return 2;
+		}
 		generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, length);
 		printf( "Generated Header\n");
 		generate_content(argv[1], length);

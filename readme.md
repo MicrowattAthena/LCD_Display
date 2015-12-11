@@ -2,6 +2,17 @@ Reverse Engineering an LCD Display
 
 Changelog
 
+V 0.0.5 
+	
+	Character Map nor implemented: Automatically generated
+	Main function now implemented. 
+
+	To Do:
+
+	Fix Character Maps (Some characters dont look good)
+	Define Flags for Effect Types etc.
+	complete readme
+
 V 0.0.4
 
 	User Input is now parsed correctly.

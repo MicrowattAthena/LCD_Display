@@ -11,12 +11,17 @@
 
 #include "character_constructor.h"
 
+#define MAX_SCREENS 4
+
 char first_header_final[7];
 char second_header_final[64];
-char first_screen_final[512];
-char second_screen_final[512];
-char third_screen_final[512];
-char fourth_screen_final[512];
+
+struct screen_main {
+	char screen_contents[512];
+};
+
+struct screen_main screen_final[MAX_SCREENS];
+ 
 char footer_final[2];
 
 int generate_header(char screennumber, char effect_type, char screen_speed, char stay_time, char border_type, int length)
@@ -56,7 +61,6 @@ int generate_header(char screennumber, char effect_type, char screen_speed, char
 	}
 	
 	second_header_final[62] = CRC_check;
-	printf("Calculated Header CRC: %x	\n", CRC_check);
 	return 0;
 }
 
@@ -66,19 +70,13 @@ int generate_content(char *content, int length)
 	int content_CRC_Check = 0;
 	int character_position = 0;
 	int printcount =0;
+	int currentscreen = 0;
 
-	/* TO DO:
-		Recieve Input from User
-		Determine Number of Screens needed
-		Set number of screens
-		Write Data to correct screens
-		*/
 	printf( "Displaying: %s\n", content );
 	no_screens = (((length -1)/ 16) + 1 );
-	
-	if (no_screens >= 1)
+	while (currentscreen < no_screens)
 	{
-		printf( "Generating Screen: 1\n");
+		printf( "Generating Screen: %d\n", currentscreen + 1);
 		for (k= 0; k < 8; k++)
 		{
 			for (j = 0; j < 2; j++)
@@ -88,90 +86,18 @@ int generate_content(char *content, int length)
 						if (printcount <= length)
 						{
 						
-							first_screen_final[(2 * (i * 2 + j + (k * 32)))] =  convert_char(content[printcount], i);
+							screen_final[currentscreen].screen_contents[(2 * (i * 2 + j + (k * 32)))] =  convert_char(content[printcount], i);
 						}else{
-							first_screen_final[(2 * (i * 2 + j + (k * 32)))] = convert_char('\0', i);
+							screen_final[currentscreen].screen_contents[(2 * (i * 2 + j + (k * 32)))] = convert_char('\0', i);
 						}
-							first_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
+							screen_final[currentscreen].screen_contents[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
 					}
 				printcount++;
 			}	
 		}
+		currentscreen++;
 	}
-	
-if (no_screens >= 2)
-	{
-	printf( "Generating Screen: 2\n");
-		for (k= 0; k < 8; k++)
-		{
-			for (j = 0; j < 2; j++)
-			{
-				for (i=0; i <16; i++)
-					{
-						if (printcount <= length)
-						{
-							second_screen_final[(2 * (i * 2 + j + (k * 32)))] =  convert_char(content[printcount], i);
-						
-						}else{
-							second_screen_final[(2 * (i * 2 + j + (k * 32)))] = convert_char('\0', i);
-						}
-							second_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
-					}
-			printcount++;		
-			}
-		
-		}
-	}
-	
-	if (no_screens >= 3)
-	{
-		printf( "Generating Screen: 3\n");
-		for (k= 0; k < 8; k++)
-		{
-			for (j = 0; j < 2; j++)
-			{
-				for (i=0; i <16; i++)
-					{
-						if (printcount <= length)
-						{
-					
-							third_screen_final[(2 * (i * 2 + j + (k * 32)))] =  convert_char(content[printcount], i);
-						
-						}else{
-							third_screen_final[(2 * (i * 2 + j + (k * 32)))] = convert_char('\0', i);
-						}
-							third_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
-					}
-			printcount++;		
-			}
-		
-		}
-	}
-	
-	if (no_screens >= 4)
-	{	
-		printf( "Generating Screen: 4\n");
-		for (k= 0; k < 8; k++)
-		{
-			for (j = 0; j < 2; j++)
-			{
-				for (i=0; i <16; i++)
-					{
-						if (printcount <= length)
-						{
-					
-							fourth_screen_final[(2 * (i * 2 + j + (k * 32)))] =  convert_char(content[printcount], i);
-						
-						}else{
-							fourth_screen_final[(2 * (i * 2 + j + (k * 32)))] = convert_char('\0', i);
-						}
-							fourth_screen_final[(2 * (i * 2 + j + (k * 32))) + 1] = 0x00;
-					}
-			printcount++;		
-			}
-		
-		}
-	}
+
 	footer_final[0] = 0x77;
 	footer_final[1] = 0x5A;
 	
@@ -211,45 +137,17 @@ int write_content()
 		/* handle error */
 	}	
 		
-	//First Screen Data
-		
-	memcpy(firstHalf, first_screen_final, length * sizeof(char));
-	memcpy(secondHalf, first_screen_final + 256, length * sizeof(char));
+	//Screen Data
+	for (i=0; i<MAX_SCREENS; i++)
+	{
+	memcpy(firstHalf, screen_final[i].screen_contents, length * sizeof(char));
+	memcpy(secondHalf, screen_final[i].screen_contents+ 256, length * sizeof(char));
 
 	write(usbdev, firstHalf,length);
 	usleep(250000);
 	write(usbdev, secondHalf,length);
 	usleep(250000);
-
-	//Second Screen Data
-
-	memcpy(firstHalf, second_screen_final, length * sizeof(char));
-	memcpy(secondHalf, second_screen_final + 256, length * sizeof(char));
-
-	write(usbdev, firstHalf,length);
-	usleep(250000);
-	write(usbdev, secondHalf,length);
-	usleep(250000);
-		
-	//Third Screen Data
-		
-	memcpy(firstHalf, third_screen_final, length * sizeof(char));
-	memcpy(secondHalf, third_screen_final + 256, length * sizeof(char));
-	
-	write(usbdev, firstHalf,length);
-	usleep(250000);
-	write(usbdev, secondHalf,length);
-	usleep(250000);
-		
-	//Fourth Screen Data
-		
-	memcpy(firstHalf, fourth_screen_final, length * sizeof(char));
-	memcpy(secondHalf, fourth_screen_final + 256, length * sizeof(char));
-	
-	write(usbdev, firstHalf,length);
-	usleep(250000);
-	write(usbdev, secondHalf,length);
-	usleep(250000);
+	}
 		
 	length = sizeof(footer_final);
 	printf("\nLength of Footer: %d\n", length);
