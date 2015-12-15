@@ -2,6 +2,16 @@ Reverse Engineering an LCD Display
 
 Changelog
 
+V 0.0.6 
+	
+	Many Changes Made: New non-monospace font used.
+	Flags are now defined
+
+	To Do:
+
+	Work Out Screen Size (Currently based on old system)
+	BugFix (Message starting with A breaks, has newline in it?)
+
 V 0.0.5 
 	
 	Character Map nor implemented: Automatically generated

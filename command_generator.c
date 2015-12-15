@@ -16,6 +16,7 @@
 char first_header_final[7];
 char second_header_final[64];
 
+
 struct screen_main {
 	char screen_contents[512];
 };
@@ -70,13 +71,11 @@ int generate_content(char *content, int length)
 	int content_CRC_Check = 0;
 	int character_position = 0;
 	int printcount =0;
-	int currentscreen = 0;
 
-	printf( "Displaying: %s\n", content );
-	no_screens = (((length -1)/ 16) + 1 );
-	while (currentscreen < no_screens)
-	{
-		printf( "Generating Screen: %d\n", currentscreen + 1);
+	
+	convert_char(content, length);
+			
+	/*	printf( "Generating Screen: %d\n", currentscreen + 1);
 		for (k= 0; k < 8; k++)
 		{
 			for (j = 0; j < 2; j++)
@@ -94,9 +93,10 @@ int generate_content(char *content, int length)
 					}
 				printcount++;
 			}	
-		}
-		currentscreen++;
-	}
+			* 		currentscreen++;
+		} */
+
+	
 
 	footer_final[0] = 0x77;
 	footer_final[1] = 0x5A;
@@ -104,14 +104,32 @@ int generate_content(char *content, int length)
 	//CRC Isn't actually used ?
 	return 0;
 }
-
 int write_content()
 {
 	int usbdev; /* handle to FTDI device */
-	int no_screens, i, length;
-		
 	system("stty -F /dev/ttyUSB0 115200 cs8 min 1 time 1");
 	usbdev = open("/dev/ttyUSB0", O_RDWR);
+	
+	write_header(usbdev);
+	write_main(usbdev);
+	write_footer(usbdev);
+}
+
+int write_footer(int usbdev)
+{
+	int length;
+	length = sizeof(footer_final);
+	printf("\nLength of Footer: %d\n", length);
+	write(usbdev, footer_final,length);
+	usleep(20000);
+		
+	close(usbdev); 	
+}
+
+int write_header(int usbdev)
+{
+	
+	int no_screens, i, length;
 		
 	length = sizeof(first_header_final);
 	printf("\nLength of First Header: %d", length);
@@ -126,15 +144,15 @@ int write_content()
 		
 	length = 256;
 		
-	char *firstHalf = malloc(length * sizeof(char));
+	/*char *firstHalf = malloc(length * sizeof(char));
 	if (!firstHalf) 
 	{
-		/* handle error */
+		//handle
 	}
 	char *secondHalf = malloc(length * sizeof(char));
 	if (!secondHalf)
 	{
-		/* handle error */
+	//handle
 	}	
 		
 	//Screen Data
@@ -148,13 +166,7 @@ int write_content()
 	write(usbdev, secondHalf,length);
 	usleep(250000);
 	}
-		
-	length = sizeof(footer_final);
-	printf("\nLength of Footer: %d\n", length);
-	write(usbdev, footer_final,length);
-	usleep(20000);
-		
-	close(usbdev); 
 	
+	*/
 	return 0;	
 }

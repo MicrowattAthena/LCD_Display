@@ -11,11 +11,11 @@
 
 //DEFAULT VALUES - May need to overwrite these 
 
-char screennumber = 0x01;
-char effect_type = 0x01;
-char screen_speed = 0x02;
-char stay_time = 0x03;
-char border_type = 0x00;
+char screennumber = SCREEN_TWO;
+char effect_type = EFFECT_NONE;
+char screen_speed = SPEED_SIX;
+char stay_time = STAY_FIVE;
+char border_type = BORDER_NONE;
 
 //END OF DEFAULT VALUES
 int main ( int argc, char **argv )
