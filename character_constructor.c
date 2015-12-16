@@ -13,24 +13,63 @@ int led_array[512][16];
 int led_byte_array[4][16][16];
 char complete_messages[4][512];
 int effect_type;
+int screen_breakpoints[5];
+
 char convert_char(char* content, int contentlength, int effect_type_recieved)
 {
+	
 	int messagelength =0;
 	int i, h,g,f, no_screens;
-	int charlength, charpos;
-	
+	int charlength[90], charpos[90];
+	int char_index;
+	int screen_index =0;
+	int currentbreakpoint;
 	effect_type = effect_type_recieved;
 	printf( "\nDisplaying: %s\n", content );
 	printf("Generating Characters: ");
-		for (h=0; h < contentlength; h++)
+		for (char_index=0; char_index < contentlength; char_index++)
 			{
-				printf("%c", content[h]);
-				charpos = get_array(content[h]);
-				charlength = arrOffset[charpos+1] - arrOffset[charpos];
-				messagelength += charlength;
-				charpos = arrOffset[charpos];
-				generate_screen(charpos, charlength); 
+		//	printf("%c", content[char_index]);
+				
+				charpos[char_index] = get_array(content[char_index]);
+				charlength[char_index] = arrOffset[charpos[char_index]+1] - arrOffset[charpos[char_index]];
+				messagelength += charlength[char_index];
+				
+				if (content[char_index] == ' ' || content[char_index] == '?' || content[char_index] == '!' || content[char_index] == '.')
+				{
+					printf("%c\t", content[char_index]);
+					printf("%d\t", messagelength);
+					printf("\n%d > %d?\n", messagelength, screen_breakpoints[screen_index - 1] + 128);
+					if (messagelength > screen_breakpoints[screen_index -1] + 128)
+					{
+					
+					screen_breakpoints[screen_index] = currentbreakpoint;
+					printf("New Screen Breakpoint: %d\t%d\n", currentbreakpoint, screen_index);
+					screen_index++;
+					}
+					currentbreakpoint = messagelength;
+					
+				}
+				
+				charpos[char_index] = arrOffset[charpos[char_index]];
+				
 			}	
+			
+			printf("\nEND OF MESSAGE\n", messagelength, screen_breakpoints[screen_index - 1] + 128);
+					screen_breakpoints[screen_index] = currentbreakpoint;
+					printf("New Screen Breakpoint: %d\t%d\n", currentbreakpoint, screen_index);
+				
+				for (i=1; i <4; i++)
+					screen_breakpoints[i] -= screen_breakpoints[i -1];
+				for (i = 0; i < 4; i++)
+				{
+					printf("Screen Breakpoints: %d\t\n", screen_breakpoints[i]);
+				}
+		for (char_index=0; char_index < contentlength; char_index++)
+		{
+		generate_screen(charpos[char_index], charlength[char_index]); 
+		}
+			
 	printf("\n");
 		messagelength = (messagelength / 64) + 1;
 		converttobytearray(); 
@@ -42,18 +81,23 @@ char convert_char(char* content, int contentlength, int effect_type_recieved)
 int generate_screen(int charpos, int charlength)
 {
 	
-	int h, i, bit, input;
+	int h, bit, input;
+
 
 	if (effect_type != EFFECT_MOVE_LEFT_FULL && effect_type !=  EFFECT_MOVE_RIGHT_FULL)
-	{
+
 		
-		if (currentposition + charlength >= 128)
+		//if (currentposition + charlength >= 128)
+		printf("%d\t%d\n", currentposition+charlength, screen_breakpoints[currentscreen]);
+		 if (currentposition+ charlength > screen_breakpoints[currentscreen])
 		{
+			printf("\nMatch! Breakpoint: %d\n", currentposition+charlength );
 			currentscreen++;
+		
 			currentposition =0;
 		}
-	}
-				
+
+	
 	for (h=0; h < charlength; h++)
 	{
 		//printf( "\n");
@@ -144,24 +188,13 @@ int write_main(int usbdev)
 
 {
 	int i, screen;
-	/*	FILE *debug = fopen("output.txt", "w");
-	fprintf(debug, "\nScreen%d\n", 0);
 	
-for (i=0; i <512; i++)
-		{
-			if (complete_messages[0][i] == 10)
-			fprintf(debug, "%d = %d\t", i, complete_messages[0][i]);
-		}
-		* 
-		* */
 		printf("Writing Main Message");
 	for (screen = 0; screen < 4; screen ++)
 	{
-
 		write(usbdev, &complete_messages[screen][0],256);
 		usleep(250000);
 		write(usbdev, &complete_messages[screen][256],256);
 		usleep(250000);
 	}
-	//fclose(debug);
 }

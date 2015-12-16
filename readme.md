@@ -2,6 +2,17 @@ Programming an LED Display
 
 Changelog
 
+V 0.0.9
+
+	(Buggy) Single Screen Mode Messages are now truncated at ' ', '!', '?', '.'
+	Working fine on Pi
+
+	To Do:
+	
+	Add Arguments for Screen Variables
+	Bugfix Message Truncation (Sometimes end of message is lost, break on message with no spaces)
+	Massively clean up code
+
 V 0.0.8 
 
 	Fixed Screen Effects
