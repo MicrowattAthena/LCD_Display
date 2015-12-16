@@ -13,11 +13,12 @@
 
 char screennumber = SCREEN_TWO;
 char effect_type = EFFECT_NONE;
-char screen_speed = SPEED_SIX;
-char stay_time = STAY_FIVE;
+char screen_speed = SPEED_THREE;
+char stay_time = STAY_THREE;
 char border_type = BORDER_NONE;
 
 //END OF DEFAULT VALUES
+
 int main ( int argc, char **argv )
 
 { 
@@ -30,20 +31,20 @@ int main ( int argc, char **argv )
 		return 1;
 	
     }else{
-		
-		printf( "Displaying: %s\n", argv[1] );
+
 		int length;
+		int messagelength;
 		length=strlen(argv[1]);
-		if (length > 64) 
+		if (length > 90) 
 		{
-		printf("Character Limit is 64, you have used %d\n", length);
+		printf("\nCharacter Limit is 90, you have used %d\n", length);
 		return 2;
 		}
-		generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, length);
+		messagelength = generate_content(argv[1], length, effect_type);
+		generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, messagelength);
 		printf( "Generated Header\n");
-		generate_content(argv[1], length);
 		write_content();
-
+		printf(" \nComplete!\n");
 		return 0;
 		}
 };

@@ -17,7 +17,7 @@ char second_header_construct[] =
 	
 	0x00,
 	
-	0x02, //Screen Speed
+	0x05, //Screen Speed
 	
 	0x00,
 

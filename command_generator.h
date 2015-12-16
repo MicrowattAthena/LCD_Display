@@ -1,11 +1,12 @@
 #ifndef __COMMAND_GENERATOR_H
 #define __COMMAND_GENERATOR_H
 
-int generate_header(char screennumber, char effect_type, char screen_speed, char stay_time, char border_type, int length);
-int generate_content(char *content, int length);
+int generate_header(int screennumber, int effect_type, int screen_speed, int stay_time, int border_type, int length);
+int generate_content(char *content, int length, int effect_type);
 int write_content();
 int write_header(int usbdev);
 int write_footer(int usbdev);
+
 
 //Screen Numbers (Screen to Change)
 #define SCREEN_ONE 0x01

@@ -1,7 +1,17 @@
-Reverse Engineering an LCD Display
+Programming an LED Display
 
 Changelog
 
+V 0.0.7 
+	
+	Screen Sizing now works. 
+	Bug with A character resolved (USBDev not opened as raw output, 10 being seen as \r\n)
+	
+	To Do:
+
+	Fix Screen Effects (Most Effects are fine but No Effect with multiple lines always zooms through text)
+	Add Arguments for Screen Variables (screen stay etc.)
+	
 V 0.0.6 
 	
 	Many Changes Made: New non-monospace font used.

@@ -1,5 +1,6 @@
 
 #include "character_constructor.h"
+#include "command_generator.h"
 #include "character_arrays.h"
 #include <stdio.h>
 #include <stdlib.h>	
@@ -11,47 +12,46 @@ int currentscreen=0;
 int led_array[512][16];
 int led_byte_array[4][16][16];
 char complete_messages[4][512];
-
-char convert_char(char* content, int contentlength)
+int effect_type;
+char convert_char(char* content, int contentlength, int effect_type_recieved)
 {
-	
+	int messagelength =0;
 	int i, h,g,f, no_screens;
 	int charlength, charpos;
 	
-	printf( "Displaying: %s\n", content );
-
+	effect_type = effect_type_recieved;
+	printf( "\nDisplaying: %s\n", content );
+	printf("Generating Characters: ");
 		for (h=0; h < contentlength; h++)
 			{
-				printf( "Generating Character: %c\n", content[h]);
+				printf("%c", content[h]);
 				charpos = get_array(content[h]);
 				charlength = arrOffset[charpos+1] - arrOffset[charpos];
+				messagelength += charlength;
 				charpos = arrOffset[charpos];
-				generate_screen(charpos, charlength); // Works Correctly, character arrays are incorrect
+				generate_screen(charpos, charlength); 
 			}	
-		
- for (g = 0; g < 512; g++)
-		{
-		for (i = 0; i < 16; i++)
-			{
-			//	if (led_array[g][i] != 0)
-		//	printf("%d\t%d\t%d\n", led_array[g][i],g,i);
-			}
-		}
-		converttobytearray(); // Broken, pls fix
+	printf("\n");
+		messagelength = (messagelength / 64) + 1;
+		converttobytearray(); 
 		createmessage();
-
-	return 0x00;
+		
+	return messagelength;
 }
 
 int generate_screen(int charpos, int charlength)
 {
 	
 	int h, i, bit, input;
-	
-	if (currentposition + charlength >= 128)
+
+	if (effect_type != EFFECT_MOVE_LEFT_FULL && effect_type !=  EFFECT_MOVE_RIGHT_FULL)
 	{
-		currentscreen++;
-		currentposition =0;
+		
+		if (currentposition + charlength >= 128)
+		{
+			currentscreen++;
+			currentposition =0;
+		}
 	}
 				
 	for (h=0; h < charlength; h++)
@@ -118,9 +118,6 @@ int createmessage()
 		int screen, pairofcolumns, column, row, sequencenumber;
 		
 		int counter;
-		//printf("\nStandard Array\t\tLED Array\t\t\n");
-		//	printf("\nColumn\t\tRow\t\t\n");
-		//printf("\nSequence Number\t\tValue\t\t\n");
 		for (screen =0; screen < 4; screen++)
 		{
 			sequencenumber = 0;
@@ -129,12 +126,9 @@ int createmessage()
 					for (row = 15; row >= 0; row--)
 						for (pairofcolumns = 0; pairofcolumns < 2; pairofcolumns++)
 						{	
-					//		printf("\n%d\t\t%d\t\t",column * 2 + pairofcolumns, row);
-				//	if (led_byte_array[screen][column * 2 + pairofcolumns][row] != 0)
-					//		printf("%d\t",led_byte_array[screen][column * 2 + pairofcolumns][row]);
-						if (led_byte_array[screen][column * 2 + pairofcolumns][row] != 0)
-							printf("\n%d\t\t%d\t\t%d",led_byte_array[screen][column * 2 + pairofcolumns][row],(column * 2 + pairofcolumns),(row));
-							complete_messages[screen][sequencenumber] = led_byte_array[screen][column * 2 + pairofcolumns][row];
+				
+						if (((led_byte_array[screen][column * 2 + pairofcolumns][row]) == 10) ||((led_byte_array[screen][column * 2 + pairofcolumns][row]) == 13));
+							complete_messages[screen][sequencenumber] = (led_byte_array[screen][column * 2 + pairofcolumns][row]);
 							sequencenumber++;
 							complete_messages[screen][sequencenumber] = 0x00;
 							sequencenumber++;
@@ -143,26 +137,31 @@ int createmessage()
 				}
 		}
 				
-		int i;
-		printf("\n");
-		//for (i=0; i < 512; i++)
-	//		printf("%d\t", complete_messages[0][i]);
-		printf("Sequence Length: %d\n", sequencenumber);
 		return 0;
 }
 
 int write_main(int usbdev)
 
 {
-	int screen;
+	int i, screen;
+	/*	FILE *debug = fopen("output.txt", "w");
+	fprintf(debug, "\nScreen%d\n", 0);
 	
+for (i=0; i <512; i++)
+		{
+			if (complete_messages[0][i] == 10)
+			fprintf(debug, "%d = %d\t", i, complete_messages[0][i]);
+		}
+		* 
+		* */
+		printf("Writing Main Message");
 	for (screen = 0; screen < 4; screen ++)
 	{
-		printf("\nLength of Main Message: %d", 256);
+
 		write(usbdev, &complete_messages[screen][0],256);
 		usleep(250000);
-		printf("\nLength of Main Message: %d", 256);
 		write(usbdev, &complete_messages[screen][256],256);
 		usleep(250000);
 	}
+	//fclose(debug);
 }
