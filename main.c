@@ -11,11 +11,11 @@
 
 //DEFAULT VALUES - May need to overwrite these 
 
-char screennumber = SCREEN_TWO;
-char effect_type = EFFECT_NONE;
-char screen_speed = SPEED_THREE;
-char stay_time = STAY_THREE;
-char border_type = BORDER_NONE;
+int screennumber = SCREEN_TWO;
+int effect_type = EFFECT_MOVE_LEFT_FULL;
+int screen_speed = SPEED_ONE;
+int stay_time = STAY_FOUR;
+int border_type = BORDER_NONE;
 
 //END OF DEFAULT VALUES
 

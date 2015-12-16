@@ -2,6 +2,14 @@ Programming an LED Display
 
 Changelog
 
+V 0.0.8 
+
+	Fixed Screen Effects
+	
+	To Do:
+
+	Add Arguments for Screen Variables
+	Test Portability to Pi 
 V 0.0.7 
 	
 	Screen Sizing now works. 
