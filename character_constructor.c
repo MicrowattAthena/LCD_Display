@@ -82,7 +82,7 @@ char convert_char(char* content, int contentlength, int effect_type_recieved)
 		}
 			
 	printf("\n");
-		messagelength = (((messagelength / 128) + 1) * 2);
+		messagelength = ((((messagelength -1/) 128) + 1) * 2);
 		converttobytearray(); 
 		createmessage();
 		
