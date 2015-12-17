@@ -2,6 +2,17 @@ Programming an LED Display
 
 Changelog
 
+V 0.0.10
+
+	Truncation should now function correctly
+	Non-Mapped Characters printed as a space
+	
+	To Do:
+
+	Add Arguments for Screen Variables (Possibly Config File?)
+	Clean up Code
+	(Find Fix for Messages Being Too Long)
+
 V 0.0.9
 
 	(Buggy) Single Screen Mode Messages are now truncated at ' ', '!', '?', '.'

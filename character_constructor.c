@@ -14,11 +14,10 @@ int led_byte_array[4][16][16];
 char complete_messages[4][512];
 int effect_type;
 int screen_breakpoints[5];
-
+	int messagelength =0;
 char convert_char(char* content, int contentlength, int effect_type_recieved)
 {
 	
-	int messagelength =0;
 	int i, h,g,f, no_screens;
 	int charlength[90], charpos[90];
 	int char_index;
@@ -29,41 +28,53 @@ char convert_char(char* content, int contentlength, int effect_type_recieved)
 	printf("Generating Characters: ");
 		for (char_index=0; char_index < contentlength; char_index++)
 			{
-		//	printf("%c", content[char_index]);
+			printf("%c", content[char_index]);
 				
 				charpos[char_index] = get_array(content[char_index]);
 				charlength[char_index] = arrOffset[charpos[char_index]+1] - arrOffset[charpos[char_index]];
 				messagelength += charlength[char_index];
-				
-				if (content[char_index] == ' ' || content[char_index] == '?' || content[char_index] == '!' || content[char_index] == '.')
-				{
-					printf("%c\t", content[char_index]);
-					printf("%d\t", messagelength);
-					printf("\n%d > %d?\n", messagelength, screen_breakpoints[screen_index - 1] + 128);
-					if (messagelength > screen_breakpoints[screen_index -1] + 128)
+				if (messagelength > screen_breakpoints[screen_index -1] + 128)
 					{
-					
+			//			printf("\nCurrent Message Length: %d\tScreenPoint:%d\n", messagelength, screen_breakpoints[screen_index-1] + 128);
 					screen_breakpoints[screen_index] = currentbreakpoint;
-					printf("New Screen Breakpoint: %d\t%d\n", currentbreakpoint, screen_index);
+				//	printf("New Screen Breakpoint: %d\t%d\n", currentbreakpoint, screen_index);
+						
 					screen_index++;
+				
 					}
+				if (content[char_index] == ' ' || content[char_index] == '?' || content[char_index] == '!' || content[char_index] == '.')
+					{
+				//	printf("%c\t", content[char_index]);
+				//	printf("%d\t", messagelength);
+			//		printf("\n%d > %d?\n", messagelength, screen_breakpoints[screen_index - 1] + 128);
+					
 					currentbreakpoint = messagelength;
 					
 				}
-				
+					
 				charpos[char_index] = arrOffset[charpos[char_index]];
 				
 			}	
 			
-			printf("\nEND OF MESSAGE\n", messagelength, screen_breakpoints[screen_index - 1] + 128);
-					screen_breakpoints[screen_index] = currentbreakpoint;
-					printf("New Screen Breakpoint: %d\t%d\n", currentbreakpoint, screen_index);
+
+		//	printf("Screen Index: %d", screen_index);
+			screen_breakpoints[screen_index] = screen_breakpoints[screen_index -1] + 128;
+		//	printf("\nEND OF MESSAGE: \n", screen_breakpoints[screen_index] );
+			//		screen_breakpoints[screen_index -1] = currentbreakpoint;
+			//		screen_breakpoints[screen_index] = currentbreakpoint + 128;
+			//		printf("New Screen Breakpoint: %d\t%d\n", currentbreakpoint, screen_index);
+					
+			
 				
-				for (i=1; i <4; i++)
+				for (i=3; i >= 0; i--)
+				{
+					if (screen_breakpoints[i] != 0)
 					screen_breakpoints[i] -= screen_breakpoints[i -1];
+				}
+				
 				for (i = 0; i < 4; i++)
 				{
-					printf("Screen Breakpoints: %d\t\n", screen_breakpoints[i]);
+					printf("\nScreen Breakpoints: %d\t\n", screen_breakpoints[i]);
 				}
 		for (char_index=0; char_index < contentlength; char_index++)
 		{
@@ -71,7 +82,7 @@ char convert_char(char* content, int contentlength, int effect_type_recieved)
 		}
 			
 	printf("\n");
-		messagelength = (messagelength / 64) + 1;
+		messagelength = (((messagelength / 128) + 1) * 2);
 		converttobytearray(); 
 		createmessage();
 		
@@ -87,14 +98,19 @@ int generate_screen(int charpos, int charlength)
 	if (effect_type != EFFECT_MOVE_LEFT_FULL && effect_type !=  EFFECT_MOVE_RIGHT_FULL)
 
 		
-		//if (currentposition + charlength >= 128)
-		printf("%d\t%d\n", currentposition+charlength, screen_breakpoints[currentscreen]);
+	//	if (currentposition + charlength >= 128)
+	//	printf("%d\t%d\n", currentposition+charlength, screen_breakpoints[currentscreen]);
 		 if (currentposition+ charlength > screen_breakpoints[currentscreen])
 		{
-			printf("\nMatch! Breakpoint: %d\n", currentposition+charlength );
+		//	printf("\nMatch! Breakpoint: %d\n", currentposition+charlength );
 			currentscreen++;
-		
+		//	printf("\nExtra length; %d\n", (128 - currentposition));
+		 	messagelength+= (128 - currentposition);
 			currentposition =0;
+			
+		
+			 screen_breakpoints[currentscreen-1] -= (128 - currentposition);
+			
 		}
 
 	
