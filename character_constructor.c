@@ -123,6 +123,8 @@ int get_array(char input)
 				return i;
 			}
 		}
+		
+	return 7; // Space Character
 };
 
 int converttobytearray()
