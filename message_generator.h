@@ -1,8 +1,8 @@
-#ifndef __COMMAND_GENERATOR_H
-#define __COMMAND_GENERATOR_H
+#ifndef __MESSAGE_GENERATOR_H
+#define __MESSAGE_GENERATOR_H
 
 int generate_header(int screennumber, int effect_type, int screen_speed, int stay_time, int border_type, int length);
-int generate_content(char *content, int length, int effect_type);
+int generate_body(char *content, int length, int effect_type);
 int write_content();
 int write_header(int usbdev);
 int write_footer(int usbdev);
@@ -85,4 +85,5 @@ int write_footer(int usbdev);
 #define BORDER_STATIC 0x01
 #define BORDER_ROTATE 0x02
 #define BORDER_BLINK 0x03
-#endif // __COMMAND_GENERATOR_H
+
+#endif // __MESSAGE_GENERATOR_H

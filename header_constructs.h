@@ -1,5 +1,5 @@
-#ifndef __COMMAND_CONSTRUCTS_H
-#define __COMMAND_CONSTRUCTS_H
+#ifndef __HEADER_CONSTRUCTS_H
+#define __HEADER_CONSTRUCTS_H
 
 char first_header_construct[] = 
 { 	0xA5, 0xFF, 0x77, 0x00, 0x01, 0x00,
@@ -7,7 +7,6 @@ char first_header_construct[] =
 	0x01 //Screen Number
 
 };
-
 
 char second_header_construct[] = 
 {
@@ -38,4 +37,4 @@ char second_header_construct[] =
 	0x00,
 	};
 
-#endif // __COMMAND_CONSTRUCTS_H
+#endif // __HEADER_CONSTRUCTS_H

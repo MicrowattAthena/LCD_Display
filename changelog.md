@@ -2,6 +2,18 @@ Programming an LED Display
 
 Changelog
 
+
+V 0.0.11
+
+	Partially Cleaned Up Code
+	
+	To Do:
+
+	Finish Clean Up (Go Through Variable Names, Reduce no. of Class Variables, remove unneccessary libraries)
+	Add Arguments for Screen Variables
+	Find Fix for Messages Being Too Long
+	Add Displaying DateTime
+
 V 0.0.10
 
 	Truncation should now function correctly

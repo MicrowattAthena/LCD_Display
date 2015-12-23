@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "main.h"
 #include <string.h>
-#include "command_generator.h"
+#include "message_generator.h"
 
 //DEFAULT VALUES - May need to overwrite these 
 
@@ -32,28 +32,23 @@ int main ( int argc, char **argv )
 		return 1;
 	
     }else{
-		printf("Number of Arguments: %d\n", argc);
 		int length;
 		int messagelength;
 		length=strlen(argv[1]);
+		
+		//Might remove the character limit as the value is abritrary: the font is not monospaced
 		if (length > 90) 
 		{
 		printf("\nCharacter Limit is 90, you have used %d\n", length);
 		return 2;
 		}
-   //while(argc--)
-     //           printf("%s\n", *argv++);
-     //   exit(EXIT_SUCCESS);
-		
-		int testvalue;
-	/*	testvalue = strtol(argv[2], NULL, 10);
-			printf("Argument 3: %d\n", testvalue);
-		switch (testvalue)
+
+		 /* switch (testvalue)
 	 
 		{
-				case 0:
+				case 'D':
 				effect_type=EFFECT_NONE;
-				printf("Case 0");
+				printf("Case D");
 				break;
 				case 1:
 				effect_type=EFFECT_MOVE_LEFT_FULL;
@@ -63,10 +58,14 @@ int main ( int argc, char **argv )
 				effect_type=EFFECT_NONE;
 						printf("Case Default");
 				break;
-		} */ 
-		messagelength = generate_content(argv[1], length, effect_type);
+		} 
+		*/
+		
+		// We generate the body before the header as the header needs to specify the message length
+		
+		messagelength = generate_body(argv[1], length, effect_type);
 		generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, messagelength);
-		printf( "Generated Header\n");
+		
 		write_content();
 		printf(" \nComplete!\n");
 		return 0;
