@@ -2,8 +2,9 @@
 #include "body_generator.h"
 #include "message_generator.h"
 #include "character_arrays.h"
+#include "logging.h"
 #include <stdio.h>
-#include <stdlib.h>	
+#include <stdlib.h>
 #include <math.h>
 #include <unistd.h> // UNIX standard function definitions
 
@@ -18,48 +19,48 @@ int messagelength = 0;
 int char_index;
 int screen_index = 0;
 int charlength[90], charpos[90];
-	
+
 int prepare_body(char* content, int contentlength, int effect_type_recieved)
 {
 	effect_type = effect_type_recieved;
 	convert_char(content, contentlength);
-	
+
 	//For Each Character In Message
 	for (char_index=0; char_index < contentlength; char_index++)
 	{
-		generate_screen(charpos[char_index], charlength[char_index]); 
+		generate_screen(charpos[char_index], charlength[char_index]);
 	}
-	
+
 	converttobytearray();
-	
+
 	//Converts Message Length from Bit Length to Number Of Messages to Be Sent (No. Screens * 2)
-	messagelength = ((((messagelength -1)/ 128) + 1) * 2); 
+	messagelength = ((((messagelength -1)/ 128) + 1) * 2);
 	createmessage();
-	
-return messagelength;	
+
+return messagelength;
 }
 char convert_char(char* content, int contentlength)
 {
 	//Gets ASCII Chars from Message and maps out the values from character array, and sets screen breakpoints
-	
+
 	int i;
 	int currentbreakpoint;
 
-	
+
 	printf( "\nDisplaying: %s\n", content );
 	printf("Generating Characters: ");
-	
+
 		//For Each Character in Message:
 		for (char_index=0; char_index < contentlength; char_index++)
 			{
 				printf("%c", content[char_index]);
 				//Find the ASCII Character in Character Array
 				charpos[char_index] = get_array(content[char_index]);
-				
+
 				//Get Character length from the Offset Values in Array
 				charlength[char_index] = arrOffset[charpos[char_index]+1] - arrOffset[charpos[char_index]];
 				messagelength += charlength[char_index];
-				
+
 				//If Message Would Overflow the screen, go to the next screen
 				if (messagelength > screen_breakpoints[screen_index -1] + 128)
 				{
@@ -68,36 +69,36 @@ char convert_char(char* content, int contentlength)
 				}
 				//If Character is an allowed character to end on (e.g. punctuation or space, set screen breakpoint to char position)
 				if (content[char_index] == ' ' || content[char_index] == '?' || content[char_index] == '!' || content[char_index] == '.')
-				{	
-					currentbreakpoint = messagelength;	
+				{
+					currentbreakpoint = messagelength;
 				}
-				
+
 				charpos[char_index] = arrOffset[charpos[char_index]];
-				
-			}	
-			
+
+			}
+
 			//Finally, add a final screen breakpoint to the end of messagee
 
 		screen_breakpoints[screen_index] = screen_breakpoints[screen_index -1] + 128;
-	
+
 		for (i=3; i >= 0; i--)
 		{
 			if (screen_breakpoints[i] != 0)
 			screen_breakpoints[i] -= screen_breakpoints[i -1];
 		}
-				
+
 		for (i = 0; i < 4; i++)
 		{
 			printf("\nScreen Breakpoints: %d\t\n", screen_breakpoints[i]);
 		}
-				
-		
+
+
 	return 0;
 }
 
 int generate_screen(int charpos, int charlength)
 {
-	
+
 	int h, bit, input;
 
 	// If the screen is not of these types, the character at the end of a screen must be end of word or end of sentence.
@@ -117,13 +118,13 @@ int generate_screen(int charpos, int charlength)
 	{
 		//Get the bit array of the row
 		input = arrDataBytes[charpos + h];
-		
+
 		//Using Bitmagic, append bit value to correct position in array
 		for (bit = 0; bit < 16; ++bit, input >>= 1)
 		{
 			led_array[ (( currentscreen * 128) + currentposition)][bit] = (input & 1);
 		}
-		
+
 		currentposition++;
 	}
 }
@@ -132,7 +133,7 @@ int get_array(char input)
 {
 	//Fetches The Character Position in Array from Char Array
 	int i;
-	
+
 	for (i=0; i < 94; i++)
 		{
 			if (input == charOffset[i])
@@ -140,7 +141,7 @@ int get_array(char input)
 				return i;
 			}
 		}
-		
+
 	return 7; // Space Character
 };
 
@@ -149,7 +150,7 @@ int converttobytearray()
 	int screen, column, row, bitrow, value;
 	int i;
 	int temptest = 0;
-	
+
 
 		for (screen = 0; screen <4; screen++)
 		{
@@ -157,20 +158,18 @@ int converttobytearray()
 			{
 				for (row =0; row < 16; row ++)
 				{
-			        value =0;		
+			        value =0;
 					for (bitrow = 0; bitrow <8; bitrow++)
 					{
 						value += (1 << bitrow) * (led_array[column + (screen * 128) + (7-bitrow)][15 - row]);		//Work out value of 8 bits  led_array[0][row]
-						
+
 					}
-					
-					
-					
+
+
 					led_byte_array[screen][column / 8][row] = value;
-					
 				//	if (value !=0)
 				//	printf("Next: %d\t", led_byte_array[screen][column / 8][row]);
-		
+
 				}
 			}
 		}
@@ -179,11 +178,11 @@ int createmessage()
 {
 	/*This mess transfers the LED MultiDimensional Array we have now into the messages sent to the screen.
 	//The screen does not display the leds in a sensible order, but instead displays the first 16 values (as two bytes) of the top row,
-	// the first 16 values of the second row, etc., then to the second values of the top row etc etc. 
+	// the first 16 values of the second row, etc., then to the second values of the top row etc etc.
 	* It also expects an 0x00 between each value.
 		*/
 		int screen, pairofcolumns, column, row, sequencenumber;
-		
+
 		int counter;
 		for (screen =0; screen < 4; screen++)
 		{
@@ -192,18 +191,18 @@ int createmessage()
 				{
 					for (row = 15; row >= 0; row--)
 						for (pairofcolumns = 0; pairofcolumns < 2; pairofcolumns++)
-						{	
-				
+						{
+
 						if (((led_byte_array[screen][column * 2 + pairofcolumns][row]) == 10) ||((led_byte_array[screen][column * 2 + pairofcolumns][row]) == 13));
 							complete_messages[screen][sequencenumber] = (led_byte_array[screen][column * 2 + pairofcolumns][row]);
 							sequencenumber++;
 							complete_messages[screen][sequencenumber] = 0x00;
 							sequencenumber++;
-							
+
 						}
 				}
 		}
-				
+
 		return 0;
 }
 
@@ -212,7 +211,7 @@ int write_main(int usbdev)
 {
 	int i, screen;
 	//Writes the Message to the USB
-	
+
 		printf("Writing Main Message");
 	for (screen = 0; screen < 4; screen ++)
 	{

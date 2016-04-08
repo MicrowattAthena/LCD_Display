@@ -3,6 +3,27 @@ Programming an LED Display
 Changelog
 
 
+V 0.1.1
+
+	Added Message History to /logging/
+	Added Error History to /logging/	
+	To Do:
+
+	Create Folder if it doesn't exist?
+V 0.1.0
+
+	Cleaned up Upper Case Characters
+
+	To Do:
+	
+	Create Logs (Error Log, Message History)
+	Create Config (So transition speed, type, upper case etc. can all be set)
+	Check lower case characters and correct
+	Force new line on punctuation.
+	Add Arguments for Screen Variables
+	Find Fix for Messages Being Too Long
+	Add Displaying DateTime
+
 V 0.0.11
 
 	Partially Cleaned Up Code
