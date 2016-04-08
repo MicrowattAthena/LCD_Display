@@ -3,6 +3,7 @@ Programming an LED Display
 Changelog
 
 
+<<<<<<< HEAD
 V 0.1.1
 
 	Added Message History to /logging/
@@ -10,6 +11,8 @@ V 0.1.1
 	To Do:
 
 	Create Folder if it doesn't exist?
+=======
+>>>>>>> ffe8f9e79a818dc5d2b269660d407b3c13415c92
 V 0.1.0
 
 	Cleaned up Upper Case Characters
