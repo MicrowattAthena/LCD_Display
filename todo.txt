@@ -1,0 +1,12 @@
+V 0.1.0 - Released 8th April 2016
+
+C Program that writes a message to an LED Screen
+
+
+
+To Do:
+
+Create Logs (Error Log, Message History)
+Create Config (So transition speed, type, upper case etc. can all be set)
+Check lower case characters and correct
+Force new line on punctuation.
