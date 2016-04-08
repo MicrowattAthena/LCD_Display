@@ -14,7 +14,7 @@
 
 int screennumber = SCREEN_TWO;
 int effect_type = EFFECT_NONE;
-int screen_speed = SPEED_ONE;
+int screen_speed = SPEED_THREE;
 int stay_time = STAY_FOUR;
 int border_type = BORDER_NONE;
 
