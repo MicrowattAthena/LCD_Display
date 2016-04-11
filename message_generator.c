@@ -15,7 +15,7 @@
 #include "message_generator.h"
 #include "header_constructs.h"
 #include "body_generator.h"
-
+#include "logging.h"
 #define MAX_SCREENS 4
 
 //Character Arrays Sent to LED Screen
@@ -23,6 +23,7 @@
 char first_header_final[7];
 char second_header_final[64];
 char footer_final[2];
+char debugmessage[256]= "";
 
 struct screen_main {
 	char screen_contents[512];
@@ -75,6 +76,9 @@ int generate_body(char *content, int length, int effect_type)
 {
 
 	int messagelength;
+
+        snprintf(debugmessage, sizeof (debugmessage),"%s%s", "Displaying: ", content);
+        add_debug_log(debugmessage);
 
 	messagelength = prepare_body(content, length, effect_type);
 

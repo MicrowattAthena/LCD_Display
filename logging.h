@@ -4,4 +4,6 @@
 
 int add_message_log(char* content);
 int add_error_log(char* content);
+int add_debug_log(char* content);
+
 #endif // __LOGGING_H

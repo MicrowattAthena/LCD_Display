@@ -10,6 +10,8 @@
 #include <string.h>
 #include "message_generator.h"
 #include "logging.h"
+#include <fcntl.h>
+#include <errno.h>
 
 //DEFAULT VALUES - May need to overwrite these
 
@@ -19,7 +21,10 @@ int screen_speed = SPEED_THREE;
 int stay_time = STAY_FOUR;
 int border_type = BORDER_NONE;
 
-//END OF DEFAULT VALUES
+// END OF DEFAULT VALUES
+
+const char CONFIG_LOCATION[]="./config/led_display_config";
+
 
 int main ( int argc, char **argv )
 
@@ -39,9 +44,10 @@ int main ( int argc, char **argv )
 		//Might remove the character limit as the value is abritrary: the font is not monospaced
 		if (length > 60)
 		{
-		add_error_log("Character Limit is 60: Your message is too long!\n");
+		add_error_log("Character Limit is 60: Your message is too long!");
 		return 2;
 		}
+		readconfig();
 		// We generate the body before the header as the header needs to specify the message length
 
 		messagelength = generate_body(argv[1], length, effect_type);
@@ -53,3 +59,24 @@ int main ( int argc, char **argv )
 		}
 };
 
+
+int readconfig()
+{
+	// Using stat to see if file exists and is readable
+	struct stat fileStat;
+	if (stat(CONFIG_LOCATION, &fileStat) < 0)
+	{
+		add_error_log("Config File could not be found: Creating default config!");
+		return 1;
+	}else{
+		add_message_log("Config File found, loading...");
+		return 0;
+	}
+};
+
+
+int newconfig()
+{
+
+
+};

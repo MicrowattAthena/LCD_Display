@@ -19,7 +19,6 @@ int messagelength = 0;
 int char_index;
 int screen_index = 0;
 int charlength[90], charpos[90];
-
 int prepare_body(char* content, int contentlength, int effect_type_recieved)
 {
 	effect_type = effect_type_recieved;
@@ -45,15 +44,15 @@ char convert_char(char* content, int contentlength)
 
 	int i;
 	int currentbreakpoint;
-
-
-	printf( "\nDisplaying: %s\n", content );
-	printf("Generating Characters: ");
+//	init_buf(debugmessage,256);
+//	snprintf(debugmessage, sizeof (debugmessage),"%s%s", "Displaying: ", content);
+//	add_debug_log(debugmessage);
+//	add_debug_log("Generating Characters: ");
 
 		//For Each Character in Message:
 		for (char_index=0; char_index < contentlength; char_index++)
 			{
-				printf("%c", content[char_index]);
+//				printf("%c", content[char_index]);
 				//Find the ASCII Character in Character Array
 				charpos[char_index] = get_array(content[char_index]);
 
@@ -89,7 +88,9 @@ char convert_char(char* content, int contentlength)
 
 		for (i = 0; i < 4; i++)
 		{
-			printf("\nScreen Breakpoints: %d\t\n", screen_breakpoints[i]);
+//			init_buf(debugmessage,256);
+//			snprintf(debugmessage, sizeof(debugmessage),"%s%s", "Screen Breakpoints: ", screen_breakpoints[i]);
+//			add_debug_log(debugmessage);
 		}
 
 
@@ -212,7 +213,7 @@ int write_main(int usbdev)
 	int i, screen;
 	//Writes the Message to the USB
 
-		printf("Writing Main Message");
+		add_debug_log("Writing Main Message");
 	for (screen = 0; screen < 4; screen ++)
 	{
 		write(usbdev, &complete_messages[screen][0],256);
@@ -221,3 +222,4 @@ int write_main(int usbdev)
 		usleep(250000);
 	}
 }
+

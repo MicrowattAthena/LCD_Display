@@ -9,4 +9,5 @@ int createmessage();
 int prepare_body(char* content, int contentlength, int effect_type);
 int write_main(int usbdev);
 int generate_screen(int charpos, int charlength);
+void init_buf(char *buf, unsigned int size);
 #endif // __BODY_GENERATOR_H

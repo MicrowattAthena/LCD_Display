@@ -3,16 +3,24 @@ Programming an LED Display
 Changelog
 
 
-<<<<<<< HEAD
 V 0.1.1
 
 	Added Message History to /logging/
 	Added Error History to /logging/	
+	Added Debug History to /logging/
+	Config File is checked for
+
 	To Do:
 
 	Create Folder if it doesn't exist?
-=======
->>>>>>> ffe8f9e79a818dc5d2b269660d407b3c13415c92
+	Change how logging works
+	Create default config if it doesnt exist
+	Parse Config
+	Check lower case characters and correct
+	force new line on punctuation
+	Find Fix for Messages Being Too Long
+	Add Displaying DateTime
+	
 V 0.1.0
 
 	Cleaned up Upper Case Characters
