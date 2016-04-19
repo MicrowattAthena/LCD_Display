@@ -41,22 +41,23 @@ int main ( int argc, char **argv )
 		int messagelength;
 		length=strlen(argv[1]);
 
-		//Might remove the character limit as the value is abritrary: the font is not monospaced
-		if (length > 60)
-		{
-		add_error_log("Character Limit is 60: Your message is too long!");
-		return 2;
-		}
 		readconfig();
 		// We generate the body before the header as the header needs to specify the message length
 
 		messagelength = generate_body(argv[1], length, effect_type);
-		generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, messagelength);
+		if (messagelength > 0)
+		{
+			generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, messagelength);
 
-		write_content();
-		add_message_log(argv[1]);
-		return 0;
+			write_content();
+			add_message_log(argv[1]);
+			add_last_message(argv[1]);
+			return 0;
+		}else{
+			add_last_message("Error: Last Message Failed to Write");
+			return 1;
 		}
+	}
 };
 
 

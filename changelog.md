@@ -2,6 +2,18 @@ Programming an LED Display
 
 Changelog
 
+V 0.1.3
+
+	Added LastMessage log to display the message, or errors.
+	Proper Error when messages are too long to fit (based on four screen widths)
+	Decided to keep current logging method
+
+	To Do:
+
+	Config Stuff
+	Add Displaying DateTime
+
+
 V 0.1.2
 
 	Changed character maps for upper case characters

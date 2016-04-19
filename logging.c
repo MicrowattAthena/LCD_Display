@@ -7,9 +7,10 @@
 #include <stdio.h>
 #include <time.h>
 
-const char MESSAGELOG_LOCATION[] = "./logging/message_history.log";
-const char ERRORLOG_LOCATION[] =  "./logging/error_history.log";
-const char DEBUGLOG_LOCATION[] = "./logging/debug_messages.log";
+const char MESSAGELOG_LOCATION[] = "/usr/share/led_display/logging/message_history.log";
+const char ERRORLOG_LOCATION[] =  "/usr/share/led_display/logging/error_history.log";
+const char DEBUGLOG_LOCATION[] = "/usr/share/led_display/logging/debug_messages.log";
+const char LASTMESSAGE_LOCATION[] = "/usr/share/led_display/logging/last_message.log";
 
 int add_message_log(char* message)
 {
@@ -36,6 +37,17 @@ int add_error_log(char* message)
 //	printf("Error: %s\n", message);
 	fclose(ErrorFile);
 	add_debug_log(message);
+}
+int add_last_message(char* message)
+{
+	FILE *LastFile;
+	time_t rawtime;
+	struct tm * timeinfo;
+	time ( &rawtime);
+	timeinfo = localtime (&rawtime);
+	LastFile = fopen(LASTMESSAGE_LOCATION, "w");
+	fprintf(LastFile, "Time: %s\t %s\n", asctime (timeinfo), message);
+	fclose(LastFile);
 }
 
 int add_debug_log(char* message)

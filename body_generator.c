@@ -22,21 +22,25 @@ int charlength[90], charpos[90];
 int prepare_body(char* content, int contentlength, int effect_type_recieved)
 {
 	effect_type = effect_type_recieved;
-	convert_char(content, contentlength);
-
-	//For Each Character In Message
-	for (char_index=0; char_index < contentlength; char_index++)
+	if (convert_char(content, contentlength)< 1 )
 	{
-		generate_screen(charpos[char_index], charlength[char_index]);
+		//For Each Character In Message
+		for (char_index=0; char_index < contentlength; char_index++)
+		{
+			generate_screen(charpos[char_index], charlength[char_index]);
+		}
+
+		converttobytearray();
+
+		//Converts Message Length from Bit Length to Number Of Messages to Be Sent (No. Screens * 2)
+		messagelength = ((((messagelength -1)/ 128) + 1) * 2);
+		createmessage();
+		return messagelength;
+	}else{
+
+		return 0;
 	}
-
-	converttobytearray();
-
-	//Converts Message Length from Bit Length to Number Of Messages to Be Sent (No. Screens * 2)
-	messagelength = ((((messagelength -1)/ 128) + 1) * 2);
-	createmessage();
-
-return messagelength;
+	return 0;
 }
 char convert_char(char* content, int contentlength)
 {
@@ -71,7 +75,15 @@ char convert_char(char* content, int contentlength)
 				{
 					printf("breakpoint: %d\n", content[char_index]);
 					screen_breakpoints[screen_index] = currentbreakpoint;
-					screen_index++;
+					// 4 Screen Max - if more, return error
+					if (screen_index < 4)
+					{
+						screen_index++;
+					}else{
+						add_error_log("Message too long to fit on screen");
+						return 2;
+					}
+
 				}
 
 				charpos[char_index] = arrOffset[charpos[char_index]];
