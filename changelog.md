@@ -2,6 +2,22 @@ Programming an LED Display
 
 Changelog
 
+V 0.1.2
+
+	Changed character maps for upper case characters
+	Forcing new line on ., ?, or !
+	
+
+	To Do:
+	
+	Create Folder if it doesn't exist?
+        Change how logging works
+        Create default config if it doesnt exist
+        Parse Config
+        Check lower case characters and correct
+        Find Fix for Messages Being Too Long
+        Add Displaying DateTime
+
 
 V 0.1.1
 

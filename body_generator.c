@@ -60,16 +60,18 @@ char convert_char(char* content, int contentlength)
 				charlength[char_index] = arrOffset[charpos[char_index]+1] - arrOffset[charpos[char_index]];
 				messagelength += charlength[char_index];
 
+			        //If Character is an allowed character to end on (e.g. punctuation or space, set screen breakpoint to char position)
+                                if ((content[char_index] == ' ') || (content[char_index] == '.') || (content[char_index] == '?') || (content[char_index] == '!'))
+                                {
+                                        currentbreakpoint = messagelength;
+                                }
+
 				//If Message Would Overflow the screen, go to the next screen
-				if (messagelength > screen_breakpoints[screen_index -1] + 128)
+				if ((messagelength > screen_breakpoints[screen_index -1] + 128 )|| (content[char_index] == '.')|| (content[char_index] == '?') || (content[char_index] == '!'))
 				{
+					printf("breakpoint: %d\n", content[char_index]);
 					screen_breakpoints[screen_index] = currentbreakpoint;
 					screen_index++;
-				}
-				//If Character is an allowed character to end on (e.g. punctuation or space, set screen breakpoint to char position)
-				if (content[char_index] == ' ' || content[char_index] == '?' || content[char_index] == '!' || content[char_index] == '.')
-				{
-					currentbreakpoint = messagelength;
 				}
 
 				charpos[char_index] = arrOffset[charpos[char_index]];
@@ -88,6 +90,7 @@ char convert_char(char* content, int contentlength)
 
 		for (i = 0; i < 4; i++)
 		{
+			printf("\nScreen Breakpoints: %d\t\n", screen_breakpoints[i]);
 //			init_buf(debugmessage,256);
 //			snprintf(debugmessage, sizeof(debugmessage),"%s%s", "Screen Breakpoints: ", screen_breakpoints[i]);
 //			add_debug_log(debugmessage);

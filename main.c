@@ -18,7 +18,7 @@
 int screennumber = SCREEN_TWO;
 int effect_type = EFFECT_NONE;
 int screen_speed = SPEED_THREE;
-int stay_time = STAY_FOUR;
+int stay_time = STAY_SIX;
 int border_type = BORDER_NONE;
 
 // END OF DEFAULT VALUES
@@ -69,7 +69,7 @@ int readconfig()
 		add_error_log("Config File could not be found: Creating default config!");
 		return 1;
 	}else{
-		add_message_log("Config File found, loading...");
+		add_debug_log("Config File found, loading...");
 		return 0;
 	}
 };
