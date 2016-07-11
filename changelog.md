@@ -2,11 +2,23 @@ Programming an LED Display
 
 Changelog
 
+V 0.1.4
+	
+	Roughly added removing whitespace after punctuation
+	Fixed bug where length wasnt updated after removing whitespace
+
+	To Do:
+
+	ConfigStuff
+	Add Displaying DateTime
+	Clean Up Code!
+
 V 0.1.3
 
 	Added LastMessage log to display the message, or errors.
 	Proper Error when messages are too long to fit (based on four screen widths)
 	Decided to keep current logging method
+	Removing whitespaces after punctuation marks
 
 	To Do:
 

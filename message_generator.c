@@ -76,7 +76,7 @@ int generate_body(char *content, int length, int effect_type)
 {
 
 	int messagelength;
-
+	printf( "Displaying: \'%s\'\n", content);
         snprintf(debugmessage, sizeof (debugmessage),"%s%s", "Displaying: ", content);
         add_debug_log(debugmessage);
 

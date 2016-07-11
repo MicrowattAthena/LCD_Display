@@ -20,7 +20,7 @@ int add_message_log(char* message)
 	time ( &rawtime);
     	timeinfo = localtime (&rawtime);
 	MessageFile=fopen(MESSAGELOG_LOCATION, "a");
-	fprintf(MessageFile, "Time: %s \tSuccessful Message: %s\n", asctime(timeinfo), message);
+	fprintf(MessageFile, "Time: %s \tSuccessful Message: \'%s\'\n", asctime(timeinfo), message);
 	printf("Message Sent: %s\n", message);
 	fclose(MessageFile);
 }

@@ -13,6 +13,7 @@ int currentscreen= 0;
 int led_array[512][16];
 int led_byte_array[4][16][16];
 char complete_messages[4][512];
+char debugmessage[256];
 int effect_type;
 int screen_breakpoints[5];
 int messagelength = 0;
@@ -33,6 +34,7 @@ int prepare_body(char* content, int contentlength, int effect_type_recieved)
 		converttobytearray();
 
 		//Converts Message Length from Bit Length to Number Of Messages to Be Sent (No. Screens * 2)
+		printf("Message Length: %d\n", messagelength);
 		messagelength = ((((messagelength -1)/ 128) + 1) * 2);
 		createmessage();
 		return messagelength;
@@ -56,7 +58,7 @@ char convert_char(char* content, int contentlength)
 		//For Each Character in Message:
 		for (char_index=0; char_index < contentlength; char_index++)
 			{
-//				printf("%c", content[char_index]);
+				printf("%c", content[char_index]);
 				//Find the ASCII Character in Character Array
 				charpos[char_index] = get_array(content[char_index]);
 
@@ -73,10 +75,12 @@ char convert_char(char* content, int contentlength)
 				//If Message Would Overflow the screen, go to the next screen
 				if ((messagelength > screen_breakpoints[screen_index -1] + 128 )|| (content[char_index] == '.')|| (content[char_index] == '?') || (content[char_index] == '!'))
 				{
-					printf("breakpoint: %d\n", content[char_index]);
+					printf("\nMessage Length: %d\n", messagelength);
+					printf("\nbreakpoint: %d\n", content[char_index]);
 					screen_breakpoints[screen_index] = currentbreakpoint;
 					// 4 Screen Max - if more, return error
-					if (screen_index < 4)
+					printf("Screen Index: %d\n", screen_index);
+					if (screen_index <= 4)
 					{
 						screen_index++;
 					}else{
@@ -102,7 +106,7 @@ char convert_char(char* content, int contentlength)
 
 		for (i = 0; i < 4; i++)
 		{
-			printf("\nScreen Breakpoints: %d\t\n", screen_breakpoints[i]);
+			printf("Screen Breakpoints: %d\t\n", screen_breakpoints[i]);
 //			init_buf(debugmessage,256);
 //			snprintf(debugmessage, sizeof(debugmessage),"%s%s", "Screen Breakpoints: ", screen_breakpoints[i]);
 //			add_debug_log(debugmessage);
@@ -121,10 +125,13 @@ int generate_screen(int charpos, int charlength)
 	if (effect_type != EFFECT_MOVE_LEFT_FULL && effect_type !=  EFFECT_MOVE_RIGHT_FULL)
 
 		//If the character exceeds the breakpoints, start a new screen and reset values
+		printf("Currentposition + charlength: %d\t", currentposition + charlength);
+		printf("Screen BreakPoint: %d\n", screen_breakpoints[currentscreen]);
 		 if (currentposition+ charlength > screen_breakpoints[currentscreen])
 		{
 			currentscreen++;
 		 	messagelength+= (128 - currentposition);
+			printf("Added Length: %d\n", messagelength);
 			currentposition =0;
 			screen_breakpoints[currentscreen-1] -= (128 - currentposition);
 		}

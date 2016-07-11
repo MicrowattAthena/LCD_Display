@@ -39,19 +39,56 @@ int main ( int argc, char **argv )
     }else{
 		int length;
 		int messagelength;
-		length=strlen(argv[1]);
 
 		readconfig();
+
+
+        // Function removes trailing whitespace after punctuation
+                int punctuationfound;
+                char *i = argv[1];
+/*                char *j = argv[1];
+		printf("i char: %s\n", i);
+                while(*j != 0)
+                {
+                        *i = *j++;
+//                      printf("Char: %s, punctuation state: %d\n", i, punctuationfound);
+                        if( (*i != ' ') || (punctuationfound != 1 ))
+                        i++;
+
+                if(*j == '.' || *j == '!' || *j == '?')
+                        {
+ //                               printf("Punctuation: %s\n", j);
+                                punctuationfound = 1;
+                        }
+                        else if (*j != ' ')
+                                punctuationfound = 0;
+                }
+                *(i+1) = 0;
+		printf("I Char: %s\n", i);
+*/
 		// We generate the body before the header as the header needs to specify the message length
 
-		messagelength = generate_body(argv[1], length, effect_type);
+  // Trim leading space
+
+char *end;
+while(isspace(*i)) i++;
+
+  // Trim trailing space
+  end = i + strlen(i) - 1;
+  while(end > i && isspace(*end)) end--;
+
+  // Write new null terminator
+  *(end+1) = 0;
+  printf("Formatted char: \'%s\'\n", i);
+		length=strlen(i);
+		messagelength = generate_body(i, length, effect_type);
 		if (messagelength > 0)
 		{
 			generate_header(screennumber,effect_type,screen_speed,stay_time,border_type, messagelength);
 
 			write_content();
-			add_message_log(argv[1]);
-			add_last_message(argv[1]);
+			add_message_log(i);
+			add_last_message(i);
 			return 0;
 		}else{
 			add_last_message("Error: Last Message Failed to Write");
